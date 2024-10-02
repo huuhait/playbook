@@ -1,0 +1,327 @@
+---
+title: Software
+description: Installs preferred softwares
+privilege: TrustedInstaller
+actions:
+
+    # https://github.com/meetrevision/playbook/issues/81
+  - !writeStatus: {status: 'Updating Winget'}
+  - !powerShell:
+    weight: 50
+    runas: currentUserElevated
+    wait: true
+    exeDir: true
+    command: '.\UPDATE-APPX.ps1'
+
+  - !writeStatus: {status: 'Installing Scoop'}
+  - !powerShell:
+    weight: 50
+    command: 'Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression'
+    runas: currentUser
+    wait: true
+    exeDir: true
+  - !cmd: {command: 'scoop bucket add nonportable', runas: currentUserElevated, wait: true}
+  - !cmd: {command: 'scoop bucket add main', runas: currentUserElevated, wait: true}
+
+  - !writeStatus: {status: 'Installing Brave', option: "browser-brave"}
+  - !cmd:
+    command: 'winget install Brave.Brave --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    wait: true
+    runas: currentUser
+    option: "browser-brave"
+
+  # - !powerShell: {command: "& { Invoke-WebRequest ((Invoke-RestMethod -Uri 'https://api.github.com/repos/brave/brave-browser/releases/latest' -Method Get | ConvertTo-Json | ConvertFrom-Json).assets | where-object { $_.name -eq 'BraveBrowserStandaloneSetup.exe' }).browser_download_url -OutFile \"$env:TEMP\\BraveBrowserStandaloneSetup.exe\" }" , weight: 150, option: "browser-brave"}
+  # - !writeStatus: {status: 'Installing Brave', option: "browser-brave"}
+  # - !cmd: {command: 'call "%temp%\BraveBrowserStandaloneSetup.exe" /silent /install', runas: currentUserElevated, weight: 50, option: "browser-brave"}
+
+  - !writeStatus: {status: 'Configuring Brave', option: "browser-brave"}
+  - !cmd:
+    exeDir: true
+    command: 'robocopy "BraveSoftware" "%ProgramFiles%\BraveSoftware" /E /IM /IT /NP & robocopy "BraveSoftware" "%localappdata%\BraveSoftware" /E /IM /IT /NP'
+    ignoreErrors: true
+    weight: 20
+    option: "browser-brave"
+
+  # Firefox
+  - !writeStatus: {status: 'Installing Firefox', option: "browser-firefox"}
+  - !cmd:
+    command: 'winget install Mozilla.Firefox --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+    option: "browser-firefox"
+  # - !writeStatus: {status: 'Configuring Firefox', option: "browser-firefox"}
+  # - !run: {exe: 'FIREFOX.cmd', exeDir: true, weight: 20, option: "browser-firefox"}
+
+  # Chrome
+  - !writeStatus: {status: 'Installing Chrome', option: "browser-chrome"}
+  - !cmd:
+    command: 'winget install Google.Chrome --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+    option: "browser-chrome"
+
+  - !writeStatus: {status: 'Install Microsoft Visual Studio Code'}
+  - !cmd:
+    command: 'winget install Microsoft.VisualStudioCode --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install WinSCP'}
+  - !cmd:
+    command: 'winget install WinSCP.WinSCP --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install OBS'}
+  - !cmd:
+    command: 'winget install OBSProject.OBSStudio --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install WinRaR'}
+  - !cmd:
+    command: 'winget install RARLab.WinRAR --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install 7zip'}
+  - !cmd:
+    command: 'winget install 7zip.7zip --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Notepad++'}
+  - !cmd:
+    command: 'winget install Notepad++.Notepad++ --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install NZXT CAM'}
+  - !cmd:
+    command: 'winget install NZXT.CAM --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install AnyDesk'}
+  - !cmd:
+    command: 'winget install AnyDeskSoftwareGmbH.AnyDesk --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Afterburner'}
+  - !cmd:
+    command: 'winget install Guru3D.Afterburner --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Surfshark'}
+  - !cmd:
+    command: 'winget install Surfshark.Surfshark --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Git'}
+  - !cmd:
+    command: 'winget install Git.Git --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install FNM'}
+  - !cmd:
+    command: 'winget install Schniz.fnm --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Rustup'}
+  - !cmd:
+    command: 'winget install Rustlang.Rustup --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Python 3.11'}
+  - !cmd:
+    command: 'winget install Python.Python.3.11 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Zalo'}
+  - !cmd:
+    command: 'winget install VNGCorp.Zalo --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Steam'}
+  - !cmd:
+    command: 'winget install Valve.Steam --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Wechat'}
+  - !cmd:
+    command: 'winget install Tencent.WeChat --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Discord'}
+  - !cmd:
+    command: 'winget install Discord.Discord --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Telegram'}
+  - !cmd:
+    command: 'winget install Telegram.TelegramDesktop --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2005x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2005.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2005x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2005.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2008x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2008.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2008x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2008.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2010x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2010.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2010x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2010.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2012x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2012.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2012x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2012.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2013x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2013.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2013x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2013.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2015x86'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2015+.x86 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install VCRedist 2015+x64'}
+  - !cmd:
+    command: 'winget install Microsoft.VCRedist.2015+.x64 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Realtek Ethernet driver'}
+  - !run:
+    wait: true
+    exeDir: true
+    exe: 'RealtekEthernetDriver.exe'
+    args: '-s -SMS'
+    weight: 150
+
+  - !writeStatus: {status: 'Install Nvidia Driver by Scoop'}
+  - !cmd:
+    command: 'scoop install nonportable/nvidia-display-driver-np'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install Golang by Scoop'}
+  - !cmd:
+    command: 'scoop install main/go'
+    weight: 150
+    runas: currentUserElevated
+    wait: true
+
+  - !writeStatus: {status: 'Install L-Connect 3'}
+  - !run:
+    wait: true
+    exeDir: true
+    exe: 'L-Connect 3.exe'
+    args: '/S'
+    weight: 150
+
+  - !writeStatus: {status: 'Install Transocks'}
+  - !run:
+    exe: 'PowerShell'
+    args: '-NoP -ExecutionPolicy Bypass -File TRANSOCKS.ps1'
+    exeDir: true
+    weight: 150
+    wait: true
+
+  - !writeStatus: {status: 'Install Gearup Booster'}
+  - !run:
+    exe: 'PowerShell'
+    args: '-NoP -ExecutionPolicy Bypass -File GEARUP.ps1'
+    exeDir: true
+    weight: 150
+    wait: true

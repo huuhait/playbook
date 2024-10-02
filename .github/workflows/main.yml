@@ -1,0 +1,61 @@
+name: Archive and Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+    SXSC_REPO: 'https://github.com/Atlas-OS/sxsc'
+    FILENAME: 'Revi-PB-${{ github.ref_name }}.apbx'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update version
+        run: |
+          $version = "${{ github.ref_name }}"
+          $playbookConfPath = "src\playbook.conf"
+          $finalizeCMDPath = "src\Executables\FINALIZE.cmd"
+
+          (Get-Content -Path $playbookConfPath) -replace '<Version>.*</Version>', "<Version>$version</Version>" | Set-Content -Path $playbookConfPath
+
+          (Get-Content -Path $finalizeCMDPath) -replace 'set version=.+', "set version=$version" | Set-Content -Path $finalizeCMDPath
+        shell: pwsh
+        
+      - name: Archive content
+        run: |
+          7z a -pmalte -mhe=on ${{ env.FILENAME }} ./src/*
+
+      - name: Generate SHA256
+        run: |
+          $hash = (Get-FileHash -Algorithm SHA256 -Path ${{ env.FILENAME }}).Hash
+          echo ("HASH=" + $hash) >> $env:GITHUB_ENV
+      
+      # - name: DevUploads
+      #   run: |
+      #     url=$(bash <(curl -s https://devuploads.com/upload.sh) -f "${{ env.FILENAME }}" -k "${{ secrets.DEVUPLOADS_API_KEY }}" | grep -o 'https://devuploads.com[^"]*')
+      #     echo "DEVUPLOADS=$url" >> $GITHUB_ENV
+
+      - name: Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: ${{ env.FILENAME }}
+          asset_name: ${{ env.FILENAME }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: |
+            # Download Link ✨
+
+            If you would like to support Revision, kindly download the Playbook from the provided link below.
+
+            📌Link: 
+            
+            SHA256: `${{ env.HASH }}`
+            
