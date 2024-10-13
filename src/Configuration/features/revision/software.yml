@@ -105,13 +105,6 @@ actions:
     runas: currentUserElevated
     wait: true
 
-  - !writeStatus: {status: 'Install NZXT CAM'}
-  - !cmd:
-    command: 'winget install NZXT.CAM --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
-    weight: 150
-    runas: currentUserElevated
-    wait: true
-
   - !writeStatus: {status: 'Install AnyDesk'}
   - !cmd:
     command: 'winget install AnyDeskSoftwareGmbH.AnyDesk --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
@@ -140,9 +133,9 @@ actions:
     runas: currentUserElevated
     wait: true
 
-  - !writeStatus: {status: 'Install FNM'}
+  - !writeStatus: {status: 'Install NodeJS'}
   - !cmd:
-    command: 'winget install Schniz.fnm --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
+    command: 'winget install OpenJS.NodeJS --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
     weight: 150
     runas: currentUserElevated
     wait: true
@@ -157,13 +150,6 @@ actions:
   - !writeStatus: {status: 'Install Python 3.11'}
   - !cmd:
     command: 'winget install Python.Python.3.11 --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
-    weight: 150
-    runas: currentUserElevated
-    wait: true
-
-  - !writeStatus: {status: 'Install Zalo'}
-  - !cmd:
-    command: 'winget install VNGCorp.Zalo --source winget --scope machine --silent --accept-source-agreements --accept-package-agreements'
     weight: 150
     runas: currentUserElevated
     wait: true
@@ -280,48 +266,9 @@ actions:
     runas: currentUserElevated
     wait: true
 
-  - !writeStatus: {status: 'Install Realtek Ethernet driver'}
-  - !run:
-    wait: true
-    exeDir: true
-    exe: 'RealtekEthernetDriver.exe'
-    args: '-s -SMS'
-    weight: 150
-
-  - !writeStatus: {status: 'Install Nvidia Driver by Scoop'}
-  - !cmd:
-    command: 'scoop install nonportable/nvidia-display-driver-np'
-    weight: 150
-    runas: currentUserElevated
-    wait: true
-
   - !writeStatus: {status: 'Install Golang by Scoop'}
   - !cmd:
     command: 'scoop install main/go'
     weight: 150
     runas: currentUserElevated
-    wait: true
-
-  - !writeStatus: {status: 'Install L-Connect 3'}
-  - !run:
-    wait: true
-    exeDir: true
-    exe: 'L-Connect 3.exe'
-    args: '/S'
-    weight: 150
-
-  - !writeStatus: {status: 'Install Transocks'}
-  - !run:
-    exe: 'PowerShell'
-    args: '-NoP -ExecutionPolicy Bypass -File TRANSOCKS.ps1'
-    exeDir: true
-    weight: 150
-    wait: true
-
-  - !writeStatus: {status: 'Install Gearup Booster'}
-  - !run:
-    exe: 'PowerShell'
-    args: '-NoP -ExecutionPolicy Bypass -File GEARUP.ps1'
-    exeDir: true
-    weight: 150
     wait: true
